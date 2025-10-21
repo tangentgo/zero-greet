@@ -1,31 +1,26 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: grpc-user
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: grpc-user
-  name: grpc-user
+  namespace: rpc-user
+  name: rpc-user
   labels:
-    app: grpc-user
+    app: rpc-user
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: grpc-user
+      app: rpc-user
   template:
     metadata:
       labels:
-        app: grpc-user
+        app: rpc-user
     spec:
       containers:
-        - name: grpc-user
-          image: grpc-user:v1.0.1
+        - name: rpc-user
+          image: rpc-user:v1.0.0
           imagePullPolicy: Never
           ports:
-          - containerPort: 8080
+            - containerPort: 8080
           resources:
             requests:
               memory: "2Gi"
@@ -37,13 +32,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: grpc-user
-  name: grpc-user-service
+  namespace: rpc-user
+  name: rpc-user-service
 spec:
   selector:
-    app: grpc-user
+    app: rpc-user
   ports:
-  - protocol: TCP
-    port: 8080      
-    targetPort: 8080
-  type: ClusterIP   
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP

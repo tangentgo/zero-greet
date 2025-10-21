@@ -7,7 +7,7 @@ tasks:
      - goctl rpc protoc user.proto --go_out=. --go-grpc_out=. --zrpc_out=.
   load:
     cmds:
-      - kind load docker-image grpc-user:v1.0.1 --name kind-test
+      - kind load docker-image rpc-user:v1.0.0 --name istio-cluster
   deploy:
     cmds:
       - kubectl apply -f deploy.yaml

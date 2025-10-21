@@ -1,0 +1,25 @@
+syntax = "v1"
+
+service greet-api {
+	@handler GreetHandler
+	get /:name (Request) returns (Response)
+
+	@handler BaseHandler
+	get / (BaseHandlerReq) returns (BaseHandlerResp)
+
+}
+
+type Request {
+	Name string `path:"name,options=you|me"`
+}
+
+type Response {
+	Message string `json:"message"`
+}
+
+type BaseHandlerReq {
+}
+
+type BaseHandlerResp {
+	Message string `json:"message"`
+}

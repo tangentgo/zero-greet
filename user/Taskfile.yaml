@@ -1,0 +1,13 @@
+version: '3'
+
+tasks:
+  rpc: 
+   cmds:
+     - goctl --version
+     - goctl rpc protoc user.proto --go_out=. --go-grpc_out=. --zrpc_out=.
+  load:
+    cmds:
+      - kind load docker-image grpc-user:v1.0.1 --name kind-test
+  deploy:
+    cmds:
+      - kubectl apply -f deploy.yaml

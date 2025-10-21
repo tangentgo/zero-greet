@@ -1,0 +1,8 @@
+Name: greet-api
+Host: 0.0.0.0
+Port: 8888
+MaxSize: 524288000
+RPCuser:
+  Timeout: 300000
+  Endpoints:
+    - grpc-user-service.grpc-user:8080

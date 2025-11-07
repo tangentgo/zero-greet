@@ -51,19 +51,43 @@ spec:
       targetPort: 8888
   type: ClusterIP
 ---
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
+# HTTPRoute for greet service
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
 metadata:
-  name: greet-ingressroute-https
+  name: greet
   namespace: api-greet
 spec:
-  entryPoints:
-    - web
-  routes:
-    - kind: Rule
-      match: Host(`greet.local`)
-      services:
-        - name: greet-service
-          port: 8888
-  tls:
-    secretName: local-wildcard-tls-secret
+  parentRefs:
+  - name: shared-gateway
+    namespace: istio-system
+  hostnames:
+  - "greet.concises.net"
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: greet-service
+      port: 8888
+---
+# HTTP to HTTPS redirect for greet
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: greet-redirect
+  namespace: api-greet
+spec:
+  parentRefs:
+  - name: shared-gateway
+    namespace: istio-system
+    sectionName: http  # 只绑定到 HTTP listener
+  hostnames:
+  - "greet.concises.net"
+  rules:
+  - filters:
+    - type: RequestRedirect
+      requestRedirect:
+        scheme: https
+        statusCode: 301

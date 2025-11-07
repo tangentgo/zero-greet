@@ -11,3 +11,8 @@ tasks:
   deploy:
     cmds:
       - kubectl apply -f deploy.yaml
+  
+  push:
+    cmds:
+      - docker build -t fengyuxiu/zero-greet-user:latest .
+      - docker push fengyuxiu/zero-greet-user:latest

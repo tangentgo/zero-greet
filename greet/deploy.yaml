@@ -22,16 +22,16 @@ spec:
     spec:
       containers:
         - name: api-greet
-          image: api-greet:v1.0.1
-          imagePullPolicy: Never
+          image: fengyuxiu/zero-greet-greet:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8888
           resources:
             requests:
-              memory: "2Gi"
-              cpu: "2"
+              memory: "500Mi"
+              cpu: "500m"
             limits:
-              memory: "2Gi"
+              memory: "1Gi"
               cpu: "2"
 ---
 apiVersion: v1

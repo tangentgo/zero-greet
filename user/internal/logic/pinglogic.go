@@ -26,7 +26,7 @@ func NewPingLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PingLogic {
 func (l *PingLogic) Ping(in *user.Request) (*user.Response, error) {
 	logx.Infof("ping recv: %v", in.GetPing())
 	resp := &user.Response{
-		Pong: "pong from user",
+		Pong: "pong from user: " + in.GetPing(),
 	}
 
 	return resp, nil

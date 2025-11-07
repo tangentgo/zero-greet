@@ -13,3 +13,12 @@ tasks:
   shell:
     cmds:
       - docker exec -it kind-test-control-plane /bin/bash
+  
+  build:
+    cmds:
+      - docker build -t fengyuxiu/zero-greet-greet:latest .
+  
+  push:
+    cmds:
+      - docker build -t fengyuxiu/zero-greet-greet:latest .
+      - docker push fengyuxiu/zero-greet-greet:latest

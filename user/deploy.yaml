@@ -1,7 +1,12 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: grpc-user
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: rpc-user
+  namespace: grpc-user
   name: rpc-user
   labels:
     app: rpc-user
@@ -17,23 +22,16 @@ spec:
     spec:
       containers:
         - name: rpc-user
-          image: fengyuxiu/zero-greeet-user:latest
+          image: fengyuxiu/zero-greet-user:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
-          resources:
-            requests:
-              memory: "500Mi"
-              cpu: "500m"
-            limits:
-              memory: "1Gi"
-              cpu: "2"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: rpc-user
-  name: rpc-user-service
+  namespace: grpc-user
+  name: grpc-user-service
 spec:
   selector:
     app: rpc-user

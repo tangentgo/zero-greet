@@ -74,25 +74,32 @@ func (l *BookInfoLogic) BookInfo(req *types.BookInfoReq) (resp *types.BookInfoRe
 	return
 }
 
-// propagateTracingHeaders 传播 Istio/Zipkin 追踪头
-func (l *BookInfoLogic) propagateTracingHeaders(req *http.Request) {
-	// Istio 使用这些 B3 头进行分布式追踪
-	tracingHeaders := []string{
-		"x-request-id",
-		"x-b3-traceid",
-		"x-b3-spanid",
-		"x-b3-parentspanid",
-		"x-b3-sampled",
-		"x-b3-flags",
-		"b3",
-	}
+// tracingHeadersKey 是用于在 context 中存储 HTTP headers 的 key
+type tracingHeadersKey struct{}
 
-	// 从上下文中获取原始请求的头（如果有）
-	// go-zero 会将原始请求存储在 context 中
-	for _, header := range tracingHeaders {
-		if value := l.ctx.Value(header); value != nil {
-			if strValue, ok := value.(string); ok && strValue != "" {
-				req.Header.Set(header, strValue)
+// propagateTracingHeaders 从 context 中获取追踪头并设置到 HTTP 请求
+func (l *BookInfoLogic) propagateTracingHeaders(req *http.Request) {
+	// 从 context 中获取原始 HTTP headers
+	if headers := l.ctx.Value(tracingHeadersKey{}); headers != nil {
+		if httpHeaders, ok := headers.(http.Header); ok {
+			tracingHeaders := []string{
+				"x-request-id",
+				"x-b3-traceid",
+				"x-b3-spanid",
+				"x-b3-parentspanid",
+				"x-b3-sampled",
+				"x-b3-flags",
+				"b3",
+				"x-ot-span-context",
+				"x-cloud-trace-context",
+				"traceparent",
+				"grpc-trace-bin",
+			}
+
+			for _, header := range tracingHeaders {
+				if value := httpHeaders.Get(header); value != "" {
+					req.Header.Set(header, value)
+				}
 			}
 		}
 	}

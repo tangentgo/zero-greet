@@ -1,6 +1,14 @@
 Name: book-api
 Host: 0.0.0.0
 Port: 8888
+
+# Telemetry 配置
+Telemetry:
+  Name: book-api
+  Endpoint: http://jaeger-collector.istio-system:14268/api/traces
+  Sampler: 1.0  # 采样率 1.0 = 100%
+  Batcher: jaeger  # 使用 jaeger 格式
+
 GreetAPI:
   Endpoint: http://greet-service.api-greet:8888
   Timeout: 5000

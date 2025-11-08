@@ -1,0 +1,37 @@
+# Istio Telemetry 配置 - 启用分布式追踪
+apiVersion: telemetry.istio.io/v1alpha1
+kind: Telemetry
+metadata:
+  name: mesh-default
+  namespace: istio-system
+spec:
+  # 全局采样率配置
+  tracing:
+  - providers:
+    - name: jaeger
+    # 采样率：100% 用于开发/测试，生产环境建议 1-10%
+    randomSamplingPercentage: 100.0
+    # 自定义标签
+    customTags:
+      environment:
+        literal:
+          value: "development"
+---
+# 为 api-book namespace 配置追踪
+apiVersion: telemetry.istio.io/v1alpha1
+kind: Telemetry
+metadata:
+  name: book-tracing
+  namespace: api-book
+spec:
+  tracing:
+  - providers:
+    - name: jaeger
+    randomSamplingPercentage: 100.0
+    customTags:
+      service.name:
+        literal:
+          value: "book-api"
+      service.namespace:
+        literal:
+          value: "api-book"

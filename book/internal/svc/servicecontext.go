@@ -21,6 +21,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		timeout = 5 * time.Second
 	}
 
+	// 使用标准 HTTP 客户端
+	// go-zero 会自动通过 httpx 传播追踪头
 	return &ServiceContext{
 		Config: c,
 		GreetClient: &http.Client{

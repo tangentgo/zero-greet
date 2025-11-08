@@ -16,6 +16,15 @@ spec:
   mtls:
     mode: STRICT
 ---
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: api-book
+spec:
+  mtls:
+    mode: STRICT
+---
 apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
@@ -23,6 +32,17 @@ metadata:
   namespace: api-greet
 spec:
   host: grpc-user-service.grpc-user.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: greet-service-mtls
+  namespace: api-book
+spec:
+  host: greet-service.api-greet.svc.cluster.local
   trafficPolicy:
     tls:
       mode: ISTIO_MUTUAL

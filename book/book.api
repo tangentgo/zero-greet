@@ -1,0 +1,26 @@
+syntax = "v1"
+
+type Request {
+	Name string `path:"name,options=you|me"`
+}
+
+type Response {
+	Message string `json:"message"`
+}
+
+type BookInfoReq {
+	Title string `form:"title"`
+}
+
+type BookInfoResp {
+	Author string `json:"author"`
+}
+
+service book-api {
+	@handler BookHandler
+	get /from/:name (Request) returns (Response)
+
+	@handler BookInfoHandler
+	get /info (BookInfoReq) returns (BookInfoResp)
+}
+

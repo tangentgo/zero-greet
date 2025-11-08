@@ -1,0 +1,6 @@
+Name: book-api
+Host: 0.0.0.0
+Port: 8888
+GreetAPI:
+  Endpoint: http://greet-service.api-greet:8888
+  Timeout: 5000

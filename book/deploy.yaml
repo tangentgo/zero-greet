@@ -1,0 +1,88 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: api-book
+  labels:
+    istio-injection: enabled
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-book
+  namespace: api-book
+  labels:
+    app: api-book
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-book
+  template:
+    metadata:
+      labels:
+        app: api-book
+    spec:
+      containers:
+        - name: api-book
+          image: fengyuxiu/zero-greet-book:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8888
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: book-service
+  namespace: api-book
+  labels:
+    app: api-book
+spec:
+  selector:
+    app: api-book
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8888
+      targetPort: 8888
+  type: ClusterIP
+---
+# HTTPRoute for book service
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: book
+  namespace: api-book
+spec:
+  parentRefs:
+  - name: shared-gateway
+    namespace: istio-system
+  hostnames:
+  - "book.concises.net"
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: book-service
+      port: 8888
+---
+# HTTP to HTTPS redirect for book
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: book-redirect
+  namespace: api-book
+spec:
+  parentRefs:
+  - name: shared-gateway
+    namespace: istio-system
+    sectionName: http  # 只绑定到 HTTP listener
+  hostnames:
+  - "book.concises.net"
+  rules:
+  - filters:
+    - type: RequestRedirect
+      requestRedirect:
+        scheme: https
+        statusCode: 301

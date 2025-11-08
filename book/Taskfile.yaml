@@ -1,0 +1,24 @@
+version: '3'
+
+tasks:
+  api: 
+   cmds:
+     - goctl api go -api book.api -dir .
+  load:
+    cmds:
+      - kind load docker-image api-book:v1.0.1 --name kind-test
+  deploy:
+    cmds:
+      - kubectl apply -f deploy.yaml
+  shell:
+    cmds:
+      - docker exec -it kind-test-control-plane /bin/bash
+  
+  build:
+    cmds:
+      - docker build -t fengyuxiu/zero-greet-book:latest .
+  
+  push:
+    cmds:
+      - docker build -t fengyuxiu/zero-greet-book:latest .
+      - docker push fengyuxiu/zero-greet-book:latest

@@ -35,3 +35,22 @@ spec:
       service.namespace:
         literal:
           value: "api-book"
+---
+# 为 api-greet namespace 配置追踪
+apiVersion: telemetry.istio.io/v1alpha1
+kind: Telemetry
+metadata:
+  name: greet-tracing
+  namespace: api-greet
+spec:
+  tracing:
+  - providers:
+    - name: jaeger
+    randomSamplingPercentage: 100.0
+    customTags:
+      service.name:
+        literal:
+          value: "greet-api"
+      service.namespace:
+        literal:
+          value: "api-greet"

@@ -3,10 +3,11 @@ package handler
 import (
 	"net/http"
 
-	"github.com/zeromicro/go-zero/rest/httpx"
 	"greet/internal/logic"
 	"greet/internal/svc"
 	"greet/internal/types"
+
+	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
 func BaseHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
@@ -17,12 +18,15 @@ func BaseHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := logic.NewBaseLogic(r.Context(), svcCtx)
+		// 传播追踪头
+		ctx := propagateTracingHeaders(r)
+
+		l := logic.NewBaseLogic(ctx, svcCtx)
 		resp, err := l.Base(&req)
 		if err != nil {
-			httpx.ErrorCtx(r.Context(), w, err)
+			httpx.ErrorCtx(ctx, w, err)
 		} else {
-			httpx.OkJsonCtx(r.Context(), w, resp)
+			httpx.OkJsonCtx(ctx, w, resp)
 		}
 	}
 }
